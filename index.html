@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sound Quest - Voice Controlled Games</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <div class="header">
+                <h1 class="app-title">Sound Quest</h1>
+                <div class="subtitle">Control with your voice! 🎤</div>
+            </div>
+
+            <div class="games-container">
+                <!-- Flappy Voice Game -->
+                <div class="game-card flappy" onclick="startGame('flappy')">
+                    <div class="game-icon">🐦</div>
+                    <h3>Flappy Voice</h3>
+                    <div class="sound-wave">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <p class="game-desc">Shout to fly higher!</p>
+                </div>
+
+                <!-- Dino Run Game -->
+                <div class="game-card dino" onclick="startGame('dino')">
+                    <div class="game-icon">🦕</div>
+                    <h3>Sound Runner</h3>
+                    <div class="sound-wave">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <p class="game-desc">Clap to jump obstacles!</p>
+                </div>
+
+                <!-- Jump Jump Game -->
+                <div class="game-card jump" onclick="startGame('jump')">
+                    <div class="game-icon">🎯</div>
+                    <h3>Voice Jump</h3>
+                    <div class="sound-wave">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <p class="game-desc">Control jump power with volume!</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn share-btn" onclick="shareApp()">
+                    <span>📤</span> Share
+                </button>
+                <button class="btn play-btn" onclick="showTutorial()">
+                    <span>▶️</span> Tutorial
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Container -->
+        <div id="gameContainer" class="page">
+            <div class="game-header">
+                <button class="back-btn" onclick="backToHome()">← Back</button>
+                <div class="game-info">
+                    <span id="gameTitle"></span>
+                    <span id="gameLevel">Level 1</span>
+                </div>
+                <div class="score">Score: <span id="score">0</span></div>
+            </div>
+
+            <canvas id="gameCanvas"></canvas>
+
+            <div class="sound-indicator">
+                <div class="volume-bar">
+                    <div id="volumeLevel"></div>
+                </div>
+                <div class="sound-info">
+                    <span id="soundStatus">🎤 Ready</span>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button id="startBtn" class="control-btn">Start Game</button>
+                <button id="pauseBtn" class="control-btn" style="display:none;">Pause</button>
+            </div>
+        </div>
+
+        <!-- Tutorial Modal -->
+        <div id="tutorialModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeTutorial()">&times;</span>
+                <h2>How to Play 🎮</h2>
+                <div class="tutorial-content">
+                    <div class="tutorial-item">
+                        <span class="emoji">🎤</span>
+                        <h4>Allow Microphone Access</h4>
+                        <p>Grant permission to use your microphone</p>
+                    </div>
+                    <div class="tutorial-item">
+                        <span class="emoji">🔊</span>
+                        <h4>Use Your Voice</h4>
+                        <p>Different sounds control different actions</p>
+                    </div>
+                    <div class="tutorial-item">
+                        <span class="emoji">📈</span>
+                        <h4>Volume = Power</h4>
+                        <p>Louder sounds create stronger effects</p>
+                    </div>
+                </div>
+                <button class="btn play-btn" onclick="closeTutorial()">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="audio-controller.js"></script>
+    <script src="games/flappy-voice.js"></script>
+    <script src="games/sound-runner.js"></script>
+    <script src="games/voice-jump.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
