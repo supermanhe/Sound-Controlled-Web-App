@@ -38,10 +38,10 @@ class SoundRunner {
         this.stars = [];
         this.isNight = false;
         
-        // Sound detection
-        this.clapThreshold = 60;
+        // Sound detection (降低阈值，更容易触发)
+        this.clapThreshold = 35;
         this.lastJumpTime = 0;
-        this.jumpCooldown = 500;
+        this.jumpCooldown = 400;
         
         // Visual effects
         this.particles = [];

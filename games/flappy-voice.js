@@ -18,10 +18,16 @@ class FlappyVoice {
             width: 40,
             height: 35,
             velocity: 0,
-            gravity: 0.5,
-            jumpPower: -8,
+            gravity: 0.3,
+            jumpPower: -6,
             rotation: 0
         };
+        
+        // Sound detection improvements
+        this.volumeHistory = [];
+        this.historySize = 5;
+        this.baselineVolume = 0;
+        this.volumeChangeThreshold = 15;
         
         // Pipes array
         this.pipes = [];
@@ -34,10 +40,9 @@ class FlappyVoice {
         this.clouds = [];
         this.particles = [];
         
-        // Sound threshold
-        this.volumeThreshold = 25;
+        // Sound threshold (removed - now using volume change detection)
         this.lastJumpTime = 0;
-        this.jumpCooldown = 300; // ms
+        this.jumpCooldown = 200; // ms
         
         this.setupCanvas();
         this.generateClouds();
@@ -57,8 +62,22 @@ class FlappyVoice {
     }
     
     handleSound(volume) {
+        // Track volume history for baseline calculation
+        this.volumeHistory.push(volume);
+        if (this.volumeHistory.length > this.historySize) {
+            this.volumeHistory.shift();
+        }
+        
+        // Calculate baseline (average of recent volumes)
+        if (this.volumeHistory.length >= this.historySize) {
+            this.baselineVolume = this.volumeHistory.reduce((a, b) => a + b, 0) / this.volumeHistory.length;
+        }
+        
+        // Detect sudden volume increase
         const currentTime = Date.now();
-        if (volume > this.volumeThreshold && 
+        const volumeIncrease = volume - this.baselineVolume;
+        
+        if (volumeIncrease > this.volumeChangeThreshold && 
             currentTime - this.lastJumpTime > this.jumpCooldown) {
             this.jump();
             this.lastJumpTime = currentTime;

@@ -30,11 +30,15 @@ class VoiceJump {
         this.targetPlatform = null;
         this.platformColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
         
-        // Jump mechanics
+        // Jump mechanics - 新的蓄力系统
         this.jumpPower = 0;
         this.maxJumpPower = 100;
         this.isCharging = false;
         this.chargeStartTime = 0;
+        this.chargeDirection = 1; // 1 = 增加, -1 = 减少
+        this.chargeSpeed = 2; // 蓄力条变化速度
+        this.soundThreshold = 25; // 开始蓄力的音量阈值
+        this.silenceThreshold = 15; // 停止蓄力的音量阈值
         
         // Camera
         this.camera = {
@@ -76,19 +80,13 @@ class VoiceJump {
             this.volumeHistory.shift();
         }
         
-        // Start charging on sustained sound
-        if (volume > 20 && !this.isCharging && !this.player.isJumping) {
+        // 开始蓄力：当音量超过阈值且未在跳跃时
+        if (volume > this.soundThreshold && !this.isCharging && !this.player.isJumping) {
             this.startCharging();
         }
         
-        // Charge based on volume
-        if (this.isCharging) {
-            this.jumpPower = Math.min(this.maxJumpPower, volume * 1.5);
-            this.player.squashAmount = Math.min(0.3, volume / 200);
-        }
-        
-        // Release on silence
-        if (volume < 10 && this.isCharging) {
+        // 停止蓄力并跳跃：当音量低于阈值时
+        if (volume < this.silenceThreshold && this.isCharging) {
             this.releaseJump();
         }
     }
@@ -97,6 +95,7 @@ class VoiceJump {
         this.isCharging = true;
         this.chargeStartTime = Date.now();
         this.jumpPower = 0;
+        this.chargeDirection = 1;
     }
     
     releaseJump() {
@@ -241,6 +240,25 @@ class VoiceJump {
     
     update() {
         if (!this.isPlaying || this.isPaused) return;
+        
+        // Update charging power (循环蓄力)
+        if (this.isCharging) {
+            this.jumpPower += this.chargeDirection * this.chargeSpeed;
+            
+            // 蓄力条到达最大值时开始减少
+            if (this.jumpPower >= this.maxJumpPower) {
+                this.jumpPower = this.maxJumpPower;
+                this.chargeDirection = -1;
+            }
+            // 蓄力条到达最小值时开始增加
+            else if (this.jumpPower <= 0) {
+                this.jumpPower = 0;
+                this.chargeDirection = 1;
+            }
+            
+            // 更新玩家的压缩动画
+            this.player.squashAmount = Math.sin((this.jumpPower / this.maxJumpPower) * Math.PI) * 0.2;
+        }
         
         // Update player physics
         if (this.player.isJumping) {
