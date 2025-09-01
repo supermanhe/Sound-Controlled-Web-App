@@ -36,7 +36,7 @@ class VoiceJump {
         this.isCharging = false;
         this.chargeStartTime = 0;
         this.chargeDirection = 1; // 1 = 增加, -1 = 减少
-        this.chargeSpeed = 2; // 蓄力条变化速度
+        this.chargeSpeed = 1; // 蓄力条变化速度
         this.soundThreshold = 25; // 开始蓄力的音量阈值
         this.silenceThreshold = 15; // 停止蓄力的音量阈值
         

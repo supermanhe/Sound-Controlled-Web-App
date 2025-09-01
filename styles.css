@@ -576,8 +576,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* 游戏页面激活时隐藏底部tabs */
-.app-container.game-active .bottom-tabs,
+/* 游戏页面激活时隐藏底部tabs（包括预览和游戏状态） */
 #gameContainer.active ~ .bottom-tabs {
     transform: translateX(-50%) translateY(100%);
     opacity: 0;
@@ -587,6 +586,28 @@ body {
 /* 排行榜页面调整底部间距 */
 #rankPage {
     padding-bottom: 160px; /* 为用户排名区域和Tab栏预留空间 */
+}
+
+/* 用户排名区域显示控制 */
+.user-rank-section {
+    display: none;
+}
+
+/* 根据活跃的排行榜显示对应的用户排名 */
+#overallRank.active ~ .overall-only {
+    display: block;
+}
+
+#flappyRank.active ~ .flappy-only {
+    display: block;
+}
+
+#runnerRank.active ~ .runner-only {
+    display: block;
+}
+
+#jumpRank.active ~ .jump-only {
+    display: block;
 }
 
 .tab-btn {
