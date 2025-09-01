@@ -445,7 +445,7 @@ function setupModalBackgroundClose() {
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
+            if (e.target === modal && modal.id !== 'gameOverModal') {
                 modal.classList.remove('show');
             }
         });
