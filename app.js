@@ -379,7 +379,9 @@ function closeGameOverModal() {
         gameCanvas.classList.remove('game-active');
         document.getElementById('startBtn').style.display = 'block';
         document.getElementById('pauseBtn').style.display = 'none';
-        currentGame.showPreview();
+        if (currentGame.showPreview) {
+            currentGame.showPreview();
+        }
     }
 }
 
@@ -430,6 +432,52 @@ function setupModalBackgroundClose() {
             }
         });
     });
+}
+
+// Tab切换功能
+function switchTab(tabName) {
+    // 更新tab按钮状态
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    
+    // 显示对应页面
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    if (tabName === 'game') {
+        document.getElementById('homePage').classList.add('active');
+    } else if (tabName === 'rank') {
+        document.getElementById('rankPage').classList.add('active');
+    }
+}
+
+// 排行榜Tab切换功能
+function switchRankTab(rankType) {
+    // 更新rank tab按钮状态
+    document.querySelectorAll('.rank-tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[onclick="switchRankTab('${rankType}')"]`).classList.add('active');
+    
+    // 显示对应排行榜
+    document.querySelectorAll('.rank-list').forEach(list => {
+        list.classList.remove('active');
+    });
+    
+    const rankListMap = {
+        'overall': 'overallRank',
+        'flappy': 'flappyRank', 
+        'runner': 'runnerRank',
+        'jump': 'jumpRank'
+    };
+    
+    const targetList = document.getElementById(rankListMap[rankType]);
+    if (targetList) {
+        targetList.classList.add('active');
+    }
 }
 
 console.log('Sound Quest initialized! 🎮🎤');
