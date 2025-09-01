@@ -18,7 +18,7 @@ class FlappyVoice {
             width: 40,
             height: 35,
             velocity: 0,
-            gravity: 0.3,
+            gravity: 0.2,
             jumpPower: -6,
             rotation: 0
         };
@@ -46,6 +46,80 @@ class FlappyVoice {
         
         this.setupCanvas();
         this.generateClouds();
+    }
+    
+    // 新增：预览模式，在点击start前显示场景
+    showPreview() {
+        this.drawPreview();
+    }
+    
+    drawPreview() {
+        // 清除画布
+        this.ctx.fillStyle = '#87CEEB';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // 绘制云彩
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        this.clouds.forEach(cloud => {
+            this.drawCloud(cloud.x, cloud.y, cloud.width, cloud.height);
+        });
+        
+        // 绘制一个静态的管道作为示例
+        this.ctx.fillStyle = '#2ECC40';
+        this.ctx.fillRect(this.canvas.width - 150, 0, 60, 150);
+        this.ctx.fillRect(this.canvas.width - 150, 250, 60, this.canvas.height - 250);
+        this.ctx.fillStyle = '#27AE60';
+        this.ctx.fillRect(this.canvas.width - 155, 120, 70, 30);
+        this.ctx.fillRect(this.canvas.width - 155, 250, 70, 30);
+        
+        // 绘制静态的鸟
+        this.ctx.save();
+        this.ctx.translate(this.bird.x + this.bird.width / 2, 
+                          this.bird.y + this.bird.height / 2);
+        
+        // 鸟身体
+        this.ctx.fillStyle = '#FFD93D';
+        this.ctx.beginPath();
+        this.ctx.ellipse(0, 0, this.bird.width / 2, this.bird.height / 2, 
+                        0, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // 鸟眼睛
+        this.ctx.fillStyle = 'white';
+        this.ctx.beginPath();
+        this.ctx.arc(this.bird.width / 4, -this.bird.height / 4, 6, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.fillStyle = 'black';
+        this.ctx.beginPath();
+        this.ctx.arc(this.bird.width / 4 + 2, -this.bird.height / 4, 3, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // 鸟嘴
+        this.ctx.fillStyle = '#FF9800';
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.bird.width / 2 - 5, 0);
+        this.ctx.lineTo(this.bird.width / 2 + 8, 0);
+        this.ctx.lineTo(this.bird.width / 2, 6);
+        this.ctx.closePath();
+        this.ctx.fill();
+        
+        // 鸟翅膀
+        this.ctx.fillStyle = '#FFC107';
+        this.ctx.beginPath();
+        this.ctx.ellipse(-5, 5, 12, 8, -20 * Math.PI / 180, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        this.ctx.restore();
+        
+        // 显示游戏名称和提示
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.ctx.fillRect(0, this.canvas.height - 100, this.canvas.width, 100);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = 'bold 28px Fredoka';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('Flappy Voice', this.canvas.width / 2, this.canvas.height - 60);
+        this.ctx.font = '16px Fredoka';
+        this.ctx.fillText('Make sounds to fly! 🐦', this.canvas.width / 2, this.canvas.height - 30);
     }
     
     setupCanvas() {
@@ -380,9 +454,7 @@ class FlappyVoice {
     gameOver() {
         this.stop();
         setTimeout(() => {
-            if (confirm(`Game Over! Score: ${this.score}\nPlay again?`)) {
-                this.start();
-            }
+            showGameOverModal('Flappy Voice', this.score);
         }, 100);
     }
     

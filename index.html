@@ -111,6 +111,42 @@
                 <button class="btn play-btn" onclick="closeTutorial()">Got it!</button>
             </div>
         </div>
+
+        <!-- Game Over Modal -->
+        <div id="gameOverModal" class="modal">
+            <div class="modal-content game-over-content">
+                <div class="game-over-header">
+                    <h2 id="gameOverTitle">Game Over! 💫</h2>
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Score</span>
+                            <span id="finalScore" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item" id="comboStat" style="display:none;">
+                            <span class="stat-label">Best Combo</span>
+                            <span id="finalCombo" class="stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn retry-btn" onclick="retryGame()">🔄 Play Again</button>
+                    <button class="btn home-btn" onclick="closeGameOverModal()">🏠 Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Microphone Permission Modal -->
+        <div id="micPermissionModal" class="modal">
+            <div class="modal-content permission-content">
+                <div class="permission-icon">🎤</div>
+                <h2>Microphone Access Required</h2>
+                <p>This game uses your voice to control the characters. Please allow microphone access to continue.</p>
+                <div class="modal-buttons">
+                    <button class="btn play-btn" onclick="requestMicPermission()">Allow Access</button>
+                    <button class="btn cancel-btn" onclick="closeMicPermissionModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="audio-controller.js"></script>

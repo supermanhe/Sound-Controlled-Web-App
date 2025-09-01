@@ -50,6 +50,75 @@ class SoundRunner {
         this.generateBackground();
     }
     
+    // 新增：预览模式
+    showPreview() {
+        this.drawPreview();
+    }
+    
+    drawPreview() {
+        // Sky background
+        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        gradient.addColorStop(0, '#87CEEB');
+        gradient.addColorStop(1, '#98D8E8');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw sun
+        this.ctx.fillStyle = '#FFD700';
+        this.ctx.beginPath();
+        this.ctx.arc(this.canvas.width - 80, 60, 35, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // Draw ground
+        this.ctx.fillStyle = '#C4A57B';
+        this.ctx.fillRect(0, this.canvas.height - this.groundHeight, 
+                         this.canvas.width, this.groundHeight);
+        
+        // Draw sample obstacles
+        this.drawSampleCactus(this.canvas.width - 200, this.canvas.height - this.groundHeight - 60);
+        this.drawSampleBird(this.canvas.width - 350, this.canvas.height - this.groundHeight - 120);
+        
+        // Draw dino in preview position
+        this.dino.y = this.canvas.height - this.groundHeight - this.dino.height;
+        this.drawDino();
+        
+        // Show game info
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.ctx.fillRect(0, this.canvas.height - 100, this.canvas.width, 100);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = 'bold 28px Fredoka';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('Sound Runner', this.canvas.width / 2, this.canvas.height - 60);
+        this.ctx.font = '16px Fredoka';
+        this.ctx.fillText('Clap to jump obstacles! 🦕', this.canvas.width / 2, this.canvas.height - 30);
+    }
+    
+    drawSampleCactus(x, y) {
+        this.ctx.fillStyle = '#2ECC40';
+        // Main trunk
+        this.ctx.fillRect(x + 10, y, 15, 60);
+        // Arms
+        this.ctx.fillRect(x, y + 10, 8, 20);
+        this.ctx.fillRect(x + 27, y + 15, 8, 15);
+    }
+    
+    drawSampleBird(x, y) {
+        // Body
+        this.ctx.fillStyle = '#8B4513';
+        this.ctx.beginPath();
+        this.ctx.ellipse(x + 22, y + 15, 15, 10, 0, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // Wings
+        this.ctx.fillStyle = '#A0522D';
+        this.ctx.beginPath();
+        this.ctx.ellipse(x + 10, y + 15, 12, 6, -20 * Math.PI/180, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.beginPath();
+        this.ctx.ellipse(x + 35, y + 15, 12, 6, 20 * Math.PI/180, 0, Math.PI * 2);
+        this.ctx.fill();
+    }
+    
     setupCanvas() {
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
@@ -527,9 +596,7 @@ class SoundRunner {
     gameOver() {
         this.stop();
         setTimeout(() => {
-            if (confirm(`Game Over! Score: ${this.score}\nPlay again?`)) {
-                this.start();
-            }
+            showGameOverModal('Sound Runner', this.score);
         }, 100);
     }
     

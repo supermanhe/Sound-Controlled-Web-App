@@ -2,6 +2,7 @@
 let currentGame = null;
 let gameCanvas = null;
 let isAudioInitialized = false;
+let gamePreviewMode = true; // 新增：预览模式标志
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
@@ -19,6 +20,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Check for mobile device
     checkMobileDevice();
+    
+    // 为所有模态框添加背景点击关闭功能
+    setupModalBackgroundClose();
 });
 
 async function initializeAudio() {
@@ -27,8 +31,12 @@ async function initializeAudio() {
         if (success) {
             isAudioInitialized = true;
             console.log('Audio initialized successfully');
+        } else {
+            showMicPermissionModal();
+            return false;
         }
     }
+    return true;
 }
 
 function setupEventListeners() {
@@ -38,6 +46,11 @@ function setupEventListeners() {
     
     startBtn.addEventListener('click', () => {
         if (currentGame) {
+            // 退出预览模式，开始真正的游戏
+            gamePreviewMode = false;
+            gameCanvas.classList.remove('game-preview');
+            gameCanvas.classList.add('game-active');
+            
             currentGame.start();
             startBtn.style.display = 'none';
             pauseBtn.style.display = 'block';
@@ -56,9 +69,8 @@ function setupEventListeners() {
 async function startGame(gameType) {
     // Initialize audio if needed
     if (!isAudioInitialized) {
-        await initializeAudio();
-        if (!isAudioInitialized) {
-            alert('Please allow microphone access to play!');
+        const success = await initializeAudio();
+        if (!success) {
             return;
         }
     }
@@ -98,6 +110,13 @@ async function startGame(gameType) {
             document.getElementById('gameTitle').textContent = 'Voice Jump';
             gameCanvas.style.background = 'linear-gradient(to bottom, #2C3E50, #3498DB)';
             break;
+    }
+    
+    // 进入预览模式，显示场景但不开始游戏
+    gamePreviewMode = true;
+    gameCanvas.classList.add('game-preview');
+    if (currentGame.showPreview) {
+        currentGame.showPreview(); // 显示游戏预览
     }
 }
 
@@ -324,6 +343,91 @@ if ('serviceWorker' in navigator) {
             console.log('ServiceWorker registration successful');
         }).catch(err => {
             console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}
+
+// 自定义弹窗函数
+function showGameOverModal(gameTitle, score, combo = null) {
+    const modal = document.getElementById('gameOverModal');
+    const titleElement = document.getElementById('gameOverTitle');
+    const scoreElement = document.getElementById('finalScore');
+    const comboElement = document.getElementById('finalCombo');
+    const comboStat = document.getElementById('comboStat');
+    
+    titleElement.textContent = `${gameTitle} - Game Over! 💫`;
+    scoreElement.textContent = score;
+    
+    if (combo !== null && combo > 0) {
+        comboElement.textContent = combo;
+        comboStat.style.display = 'block';
+    } else {
+        comboStat.style.display = 'none';
+    }
+    
+    modal.classList.add('show');
+}
+
+function closeGameOverModal() {
+    const modal = document.getElementById('gameOverModal');
+    modal.classList.remove('show');
+    
+    // 返回到预览模式
+    if (currentGame) {
+        gamePreviewMode = true;
+        gameCanvas.classList.add('game-preview');
+        gameCanvas.classList.remove('game-active');
+        document.getElementById('startBtn').style.display = 'block';
+        document.getElementById('pauseBtn').style.display = 'none';
+        currentGame.showPreview();
+    }
+}
+
+function retryGame() {
+    const modal = document.getElementById('gameOverModal');
+    modal.classList.remove('show');
+    
+    if (currentGame) {
+        gamePreviewMode = false;
+        gameCanvas.classList.remove('game-preview');
+        gameCanvas.classList.add('game-active');
+        currentGame.start();
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('pauseBtn').style.display = 'block';
+    }
+}
+
+function showMicPermissionModal() {
+    const modal = document.getElementById('micPermissionModal');
+    modal.classList.add('show');
+}
+
+function closeMicPermissionModal() {
+    const modal = document.getElementById('micPermissionModal');
+    modal.classList.remove('show');
+}
+
+async function requestMicPermission() {
+    const modal = document.getElementById('micPermissionModal');
+    modal.classList.remove('show');
+    
+    const success = await audioController.initialize();
+    if (success) {
+        isAudioInitialized = true;
+        showNotification('Microphone access granted! 🎤');
+    } else {
+        showNotification('Microphone access denied. Please enable it in your browser settings.');
+    }
+}
+
+// 模态框背景点击关闭功能
+function setupModalBackgroundClose() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
         });
     });
 }

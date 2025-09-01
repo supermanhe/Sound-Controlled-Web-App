@@ -61,6 +61,88 @@ class VoiceJump {
         this.generateStars();
     }
     
+    // 新增：预览模式
+    showPreview() {
+        this.drawPreview();
+    }
+    
+    drawPreview() {
+        // Sky background
+        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        gradient.addColorStop(0, '#2C3E50');
+        gradient.addColorStop(1, '#3498DB');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw stars
+        this.stars.forEach(star => {
+            this.ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + star.brightness * 0.5})`;
+            this.ctx.beginPath();
+            this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+        
+        // Draw sample platforms
+        this.drawSamplePlatforms();
+        
+        // Draw player in starting position
+        this.player.x = this.canvas.width / 4;
+        this.player.y = this.canvas.height / 2;
+        this.drawPreviewPlayer();
+        
+        // Show game info
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillRect(0, this.canvas.height - 100, this.canvas.width, 100);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = 'bold 28px Fredoka';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('Voice Jump', this.canvas.width / 2, this.canvas.height - 60);
+        this.ctx.font = '16px Fredoka';
+        this.ctx.fillText('Hold sound to charge, release to jump! 🎯', this.canvas.width / 2, this.canvas.height - 30);
+    }
+    
+    drawSamplePlatforms() {
+        const samplePlatforms = [
+            {x: this.canvas.width / 4, y: this.canvas.height / 2 + 50, width: 80, height: 100, color: '#FF6B6B'},
+            {x: this.canvas.width / 2, y: this.canvas.height / 2 - 20, width: 70, height: 90, color: '#4ECDC4'},
+            {x: this.canvas.width * 3/4 - 40, y: this.canvas.height / 2 - 80, width: 80, height: 110, color: '#45B7D1'}
+        ];
+        
+        samplePlatforms.forEach(platform => {
+            // Platform shadow
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            this.ctx.fillRect(platform.x + 5, platform.y + 5, platform.width, platform.height);
+            
+            // Platform body
+            this.ctx.fillStyle = platform.color;
+            this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+            
+            // Platform top
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            this.ctx.fillRect(platform.x, platform.y, platform.width, 10);
+        });
+    }
+    
+    drawPreviewPlayer() {
+        this.ctx.save();
+        this.ctx.translate(this.player.x + this.player.width / 2, 
+                          this.player.y + this.player.height / 2);
+        
+        // Player body
+        this.ctx.fillStyle = '#FFD93D';
+        this.ctx.fillRect(-this.player.width / 2, -this.player.height / 2, 
+                         this.player.width, this.player.height);
+        
+        // Player face
+        this.ctx.fillStyle = '#333';
+        this.ctx.beginPath();
+        this.ctx.arc(-5, -5, 3, 0, Math.PI * 2);
+        this.ctx.arc(5, -5, 3, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        this.ctx.restore();
+    }
+    
     setupCanvas() {
         this.canvas.width = this.canvas.offsetWidth;
         this.canvas.height = this.canvas.offsetHeight;
@@ -676,9 +758,7 @@ class VoiceJump {
     gameOver() {
         this.stop();
         setTimeout(() => {
-            if (confirm(`Game Over! Score: ${this.score}\nCombo: ${this.combo}\nPlay again?`)) {
-                this.start();
-            }
+            showGameOverModal('Voice Jump', this.score, this.combo);
         }, 100);
     }
     
