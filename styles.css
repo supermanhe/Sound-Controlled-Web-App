@@ -576,8 +576,9 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* 游戏进行时隐藏底部tabs */
-.app-container.game-active .bottom-tabs {
+/* 游戏页面激活时隐藏底部tabs */
+.app-container.game-active .bottom-tabs,
+#gameContainer.active ~ .bottom-tabs {
     transform: translateX(-50%) translateY(100%);
     opacity: 0;
     pointer-events: none;
