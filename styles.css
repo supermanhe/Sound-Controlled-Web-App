@@ -577,8 +577,10 @@ body {
 }
 
 /* 游戏进行时隐藏底部tabs */
-.game-container.active ~ .bottom-tabs {
+.app-container.game-active .bottom-tabs {
     transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* 排行榜页面调整底部间距 */

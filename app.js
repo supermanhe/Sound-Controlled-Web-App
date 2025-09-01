@@ -51,6 +51,9 @@ function setupEventListeners() {
             gameCanvas.classList.remove('game-preview');
             gameCanvas.classList.add('game-active');
             
+            // 隐藏底部Tab栏
+            document.querySelector('.app-container').classList.add('game-active');
+            
             currentGame.start();
             startBtn.style.display = 'none';
             pauseBtn.style.display = 'block';
@@ -129,6 +132,13 @@ function backToHome() {
     
     document.getElementById('gameContainer').classList.remove('active');
     document.getElementById('homePage').classList.add('active');
+    
+    // 显示底部Tab栏
+    document.querySelector('.app-container').classList.remove('game-active');
+    
+    // Reset UI
+    document.getElementById('startBtn').style.display = 'block';
+    document.getElementById('pauseBtn').style.display = 'none';
 }
 
 // Show tutorial modal
@@ -377,6 +387,10 @@ function closeGameOverModal() {
         gamePreviewMode = true;
         gameCanvas.classList.add('game-preview');
         gameCanvas.classList.remove('game-active');
+        
+        // 显示底部Tab栏
+        document.querySelector('.app-container').classList.remove('game-active');
+        
         document.getElementById('startBtn').style.display = 'block';
         document.getElementById('pauseBtn').style.display = 'none';
         if (currentGame.showPreview) {
@@ -393,6 +407,10 @@ function retryGame() {
         gamePreviewMode = false;
         gameCanvas.classList.remove('game-preview');
         gameCanvas.classList.add('game-active');
+        
+        // 隐藏底部Tab栏
+        document.querySelector('.app-container').classList.add('game-active');
+        
         currentGame.start();
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('pauseBtn').style.display = 'block';
