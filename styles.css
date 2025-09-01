@@ -573,6 +573,17 @@ body {
     padding: 10px 0;
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+/* 游戏进行时隐藏底部tabs */
+.game-container.active ~ .bottom-tabs {
+    transform: translateX(-50%) translateY(100%);
+}
+
+/* 排行榜页面调整底部间距 */
+#rankPage {
+    padding-bottom: 160px; /* 为用户排名区域和Tab栏预留空间 */
 }
 
 .tab-btn {
@@ -624,9 +635,9 @@ body {
 }
 
 .rank-tab {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid transparent;
-    color: white;
+    color: #333;
     padding: 10px 20px;
     border-radius: 20px;
     font-size: 14px;
@@ -650,7 +661,26 @@ body {
 }
 
 .rank-content {
-    padding: 0 20px 100px 20px; /* Bottom padding for tab bar */
+    padding: 0 20px 20px 20px;
+}
+
+/* 用户排名区域 */
+.user-rank-section {
+    position: sticky;
+    bottom: 80px; /* 位于底部Tab之上 */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    margin: 0 -20px;
+    z-index: 100;
+}
+
+.rank-separator {
+    text-align: center;
+    font-size: 24px;
+    color: #999;
+    margin-bottom: 10px;
+    letter-spacing: 10px;
 }
 
 .rank-list {
